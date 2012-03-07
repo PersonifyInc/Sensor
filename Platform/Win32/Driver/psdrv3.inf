@@ -63,6 +63,8 @@ DefaultDestDir = 12 ; Driver Dir
 %USB\VID_045E&PID_02AD.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AD
 %USB\VID_045E&PID_02AE.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AE&MI_00
 %USB\VID_045E&PID_02AE.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AE
+%USB\VID_045E&PID_02AD.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AD&MI_00
+%USB\VID_045E&PID_02AD.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AD
 
 [PrimeSense.NTamd64]
 %USB\VID_1D27&PID_0200.DeviceDesc%=psdrv3.Dev, USB\VID_1D27&PID_0200&MI_00
@@ -85,6 +87,8 @@ DefaultDestDir = 12 ; Driver Dir
 %USB\VID_045E&PID_02AD.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AD
 %USB\VID_045E&PID_02AE.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AE&MI_00
 %USB\VID_045E&PID_02AE.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AE
+%USB\VID_045E&PID_02AD.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AD&MI_00
+%USB\VID_045E&PID_02AD.DeviceDesc%=psdrv3.Dev, USB\VID_045E&PID_02AD
 
 [psdrv3.Dev.NT]
 CopyFiles=psdrv3.Files.Ext

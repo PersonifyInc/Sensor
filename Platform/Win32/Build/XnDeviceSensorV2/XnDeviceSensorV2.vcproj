@@ -460,6 +460,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\..\..\Source\XnDeviceSensorV2\RosBayer.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\..\..\Source\XnDeviceSensorV2\Uncomp.cpp"
 					>
 				</File>

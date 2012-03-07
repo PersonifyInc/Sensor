@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -77,6 +78,7 @@ XnSensor::XnSensor() :
 	m_FirmwareParam(XN_MODULE_PROPERTY_FIRMWARE_PARAM, NULL),
 	m_CmosBlankingUnits(XN_MODULE_PROPERTY_CMOS_BLANKING_UNITS, NULL),
 	m_CmosBlankingTime(XN_MODULE_PROPERTY_CMOS_BLANKING_TIME, NULL),
+	m_CameraAngleVertical(XN_MODULE_PROPERTY_CAMERA_ANGLE_VERTICAL, NULL),
 	m_Reset(XN_MODULE_PROPERTY_RESET),
 	m_FirmwareMode(XN_MODULE_PROPERTY_FIRMWARE_MODE),
 	m_Version(XN_MODULE_PROPERTY_VERSION, &m_DevicePrivateData.Version, sizeof(m_DevicePrivateData.Version), NULL),
@@ -91,7 +93,7 @@ XnSensor::XnSensor() :
 	m_AudioSupported(XN_MODULE_PROPERTY_AUDIO_SUPPORTED),
 	m_Firmware(&m_DevicePrivateData),
 	m_FixedParams(&m_Firmware, &m_DevicePrivateData),
-	m_SensorIO(&m_DevicePrivateData.SensorHandle),
+	m_SensorIO(&m_DevicePrivateData.SensorHandle, &m_DevicePrivateData.MotorHandle),
 	m_FPS(),
 	m_CmosInfo(&m_Firmware, &m_DevicePrivateData),
 	m_Objects(&m_Firmware, &m_DevicePrivateData, &m_FixedParams, &m_FPS, &m_CmosInfo),
@@ -117,6 +119,8 @@ XnSensor::XnSensor() :
 	m_CmosBlankingUnits.UpdateGetCallback(GetCmosBlankingUnitsCallback, this);
 	m_CmosBlankingTime.UpdateSetCallback(SetCmosBlankingTimeCallback, this);
 	m_CmosBlankingTime.UpdateGetCallback(GetCmosBlankingTimeCallback, this);
+	m_CameraAngleVertical.UpdateSetCallback(SetCameraAngleVerticalCallback, this);
+	m_CameraAngleVertical.UpdateGetCallback(GetCameraAngleVerticalCallback, this);
 	m_Reset.UpdateSetCallback(ResetCallback, this);
 	m_FirmwareMode.UpdateSetCallback(SetFirmwareModeCallback, this);
 	m_FirmwareMode.UpdateGetCallback(GetFirmwareModeCallback, this);
@@ -352,7 +356,7 @@ XnStatus XnSensor::CreateDeviceModule(XnDeviceModuleHolder** ppModuleHolder)
 	{ 
 		&m_ErrorState, &m_ResetSensorOnStartup, &m_Interface, &m_ReadFromEP1,
 		&m_ReadFromEP2, &m_ReadFromEP3, &m_ReadData, &m_NumberOfBuffers, &m_FirmwareParam, 
-		&m_CmosBlankingUnits, &m_CmosBlankingTime, &m_Reset, &m_FirmwareMode, &m_Version, 
+		&m_CmosBlankingUnits, &m_CmosBlankingTime, &m_CameraAngleVertical, &m_Reset, &m_FirmwareMode, &m_Version, 
 		&m_FixedParam, &m_FrameSync, &m_CloseStreamsOnShutdown, &m_InstancePointer, &m_ID,
 		&m_USBPath, &m_DeviceName, &m_VendorSpecificData, &m_AllowOtherUsers, &m_AudioSupported,
 	};
@@ -1299,6 +1303,39 @@ XnStatus XN_CALLBACK_TYPE XnSensor::SetCmosBlankingTimeCallback(XnGeneralPropert
 	XN_VALIDATE_GENERAL_BUFFER_TYPE(gbValue, XnCmosBlankingTime);
 	XnSensor* pThis = (XnSensor*)pCookie;
 	return pThis->SetCmosBlankingTime((const XnCmosBlankingTime*)gbValue.pData);
+}
+
+XnStatus XN_CALLBACK_TYPE XnSensor::SetCameraAngleVerticalCallback(XnIntProperty* pSender, XnUInt64 nValue, void* pCookie)
+{
+	XnSensor* pThis = (XnSensor*)pCookie;
+
+	short angle = (short)nValue*2;
+
+	// Move camera motor
+	// ref: http://openkinect.org/wiki/Protocol_Documentation
+	return xnUSBSendControl(pThis->m_DevicePrivateData.MotorHandle.USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x31, angle, 0x0000, NULL, 0, 5000 /* timeout*/);
+}
+
+XnStatus XN_CALLBACK_TYPE XnSensor::GetCameraAngleVerticalCallback(const XnIntProperty* pSender, XnUInt64* pnValue, void* pCookie)
+{
+	XnStatus nRetVal = XN_STATUS_OK;
+	char angle = 0;
+
+	XnSensor* pThis = (XnSensor*)pCookie;
+
+	// Obtain Kinect accelerometer reading
+	// ref: http://openkinect.org/wiki/Protocol_Documentation
+	XnUChar cameraAccelBuf[10];
+	XnUInt32 nRead;
+	nRetVal = xnUSBReceiveControl(pThis->m_DevicePrivateData.MotorHandle.USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x32, 0x0000, 0x0000, cameraAccelBuf, sizeof(cameraAccelBuf), &nRead, 5000 /* timeout */);
+
+	if (nRetVal == XN_STATUS_OK && nRead == 10)
+	{
+		angle = (char)cameraAccelBuf[8]/2;
+	}
+
+	*pnValue = angle;
+	return nRetVal;
 }
 
 XnStatus XN_CALLBACK_TYPE XnSensor::ResetCallback(XnIntProperty* /*pSender*/, XnUInt64 nValue, void* pCookie)

@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -72,7 +73,7 @@ typedef struct XN_SENSOR_HANDLE
 class XnSensorIO
 {
 public:
-	XnSensorIO(XN_SENSOR_HANDLE* pSensorHandle);
+	XnSensorIO(XN_SENSOR_HANDLE* pSensorHandle, XN_SENSOR_HANDLE* pMotorHandle);
 	~XnSensorIO();
 
 	static XnStatus EnumerateSensors(XnConnectionString* aConnectionStrings, XnUInt32* pnCount);
@@ -95,6 +96,7 @@ public:
 
 private:
 	XN_SENSOR_HANDLE* m_pSensorHandle;
+	XN_SENSOR_HANDLE* m_pMotorHandle;
 	XnBool m_bMiscSupported;
 	XnSensorUsbInterface m_interface;
 	XnChar m_strDeviceName[XN_DEVICE_MAX_STRING_LENGTH];

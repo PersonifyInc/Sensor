@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -143,14 +144,14 @@ XnStatus XnDeviceManagerLoadAllDevices()
 
 	XnDeviceDescriptor* pDescriptor = g_pDeviceManager->aDevices[g_pDeviceManager->nDevicesCount];
 
-	#define XN_DEVICE_EXPORT_PREFIX SensorV2_
+	#define XN_DEVICE_EXPORT_PREFIX Kinect_
 	#include <XnDeviceProto.inl>
 	#undef XN_DEVICE_EXPORT_PREFIX
 
 	nRetVal = XnDeviceManagerUpdateDefinition(pDescriptor);
 	if (nRetVal != XN_STATUS_OK)
 	{
-		xnLogWarning(XN_MASK_DEVICE_MANAGER, "'SensorV2' is not a valid device: %s", xnGetStatusString(nRetVal));
+		xnLogWarning(XN_MASK_DEVICE_MANAGER, "'Kinect' is not a valid device: %s", xnGetStatusString(nRetVal));
 	}
 	else
 	{
@@ -166,7 +167,7 @@ XnStatus XnDeviceManagerLoadAllDevices()
 	nRetVal = XnDeviceManagerUpdateDefinition(pDescriptor);
 	if (nRetVal != XN_STATUS_OK)
 	{
-		xnLogWarning(XN_MASK_DEVICE_MANAGER, "'SensorV2' is not a valid device: %s", xnGetStatusString(nRetVal));
+		xnLogWarning(XN_MASK_DEVICE_MANAGER, "'Kinect' is not a valid device: %s", xnGetStatusString(nRetVal));
 	}
 	else
 	{

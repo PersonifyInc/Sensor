@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -27,6 +28,8 @@
 #include "Bayer.h"
 #include <XnProfiling.h>
 
+// import from RosBayer.cpp
+void bayer2RGBBilinear ( const XnUInt8 *bayer, XnUChar *image, XnUInt32 xres, XnUInt32 yres );
 //---------------------------------------------------------------------------
 // Code
 //---------------------------------------------------------------------------
@@ -143,7 +146,9 @@ void XnBayerImageProcessor::OnEndOfFrame(const XnSensorProtocolResponseHeader* p
 		break;
 	case XN_OUTPUT_FORMAT_RGB24:
 		{
-			Bayer2RGB888(m_UncompressedBayerBuffer.GetData(), GetWriteBuffer()->GetUnsafeWritePointer(), GetActualXRes(), GetActualYRes(), 1, 0);
+			// Changing debayering algorithm to one from ROS project
+			//Bayer2RGB888(m_UncompressedBayerBuffer.GetData(), GetWriteBuffer()->GetUnsafeWritePointer(), GetActualXRes(), GetActualYRes(), 1, 0);
+			bayer2RGBBilinear(m_UncompressedBayerBuffer.GetData(), GetWriteBuffer()->GetUnsafeWritePointer(), GetActualXRes(), GetActualYRes());
 			GetWriteBuffer()->UnsafeUpdateSize(GetActualXRes()*GetActualYRes()*3);
 			m_UncompressedBayerBuffer.Reset();
 		}
