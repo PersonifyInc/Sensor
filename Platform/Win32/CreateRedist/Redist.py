@@ -182,6 +182,9 @@ print("Copying into redist folder...")
 # create folder structure
 os.mkdir(os.path.join(REDIST_DIR, "Bin" if vc_build_bits == "32" else "Bin64"))
 os.mkdir(os.path.join(REDIST_DIR, "Data"))
+os.mkdir(os.path.join(REDIST_DIR, "Driver"))
+os.mkdir(os.path.join(REDIST_DIR, "Driver", "amd64"))
+os.mkdir(os.path.join(REDIST_DIR, "Driver", "x86"))
 
 # copy EPL
 shutil.copy(os.path.join(ROOT_DIR, "..", "..", "..", "GPL.txt"), REDIST_DIR)
@@ -203,6 +206,23 @@ for file in os.listdir(DATA_DIR):
 #if vc_build_bits == '64':
 #    print 'Finishing without creating the installer'
 #    exit(0)
+
+# copy driver
+DRIVER_DIR = os.path.join(ROOT_DIR, "..", "Driver")
+for file in os.listdir(DRIVER_DIR):
+	try:
+		shutil.copy(os.path.join(DRIVER_DIR, file), os.path.join(REDIST_DIR, "Driver"))	
+	except IOError:		
+		pass
+		
+DRIVER_DIRX86 = os.path.join(ROOT_DIR, "..", "Driver", "x86")
+for file in os.listdir(DRIVER_DIRX86):
+	shutil.copy(os.path.join(DRIVER_DIRX86, file), os.path.join(REDIST_DIR, "Driver", "x86"))	
+	
+DRIVER_DIRAMD64 = os.path.join(ROOT_DIR, "..", "Driver", "amd64")
+for file in os.listdir(DRIVER_DIRAMD64):
+	shutil.copy(os.path.join(DRIVER_DIRAMD64, file), os.path.join(REDIST_DIR, "Driver", "amd64"))		
+
 # create installer
 print("Creating installer...")
 os.chdir(SCRIPT_DIR + "\\EE_NI")
