@@ -1309,11 +1309,15 @@ XnStatus XN_CALLBACK_TYPE XnSensor::SetCameraAngleVerticalCallback(XnIntProperty
 {
 	XnSensor* pThis = (XnSensor*)pCookie;
 
-	short angle = (short)nValue*2;
+	if (pThis->m_DevicePrivateData.MotorHandle.USBDevice != NULL) {
+		short angle = (short)nValue*2;
 
-	// Move camera motor
-	// ref: http://openkinect.org/wiki/Protocol_Documentation
-	return xnUSBSendControl(pThis->m_DevicePrivateData.MotorHandle.USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x31, angle, 0x0000, NULL, 0, 5000 /* timeout*/);
+		// Move camera motor
+		// ref: http://openkinect.org/wiki/Protocol_Documentation
+		return xnUSBSendControl(pThis->m_DevicePrivateData.MotorHandle.USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x31, angle, 0x0000, NULL, 0, 5000 /* timeout*/);
+	}
+	
+	return XN_STATUS_OK;
 }
 
 XnStatus XN_CALLBACK_TYPE XnSensor::GetCameraAngleVerticalCallback(const XnIntProperty* pSender, XnUInt64* pnValue, void* pCookie)
@@ -1323,18 +1327,21 @@ XnStatus XN_CALLBACK_TYPE XnSensor::GetCameraAngleVerticalCallback(const XnIntPr
 
 	XnSensor* pThis = (XnSensor*)pCookie;
 
-	// Obtain Kinect accelerometer reading
-	// ref: http://openkinect.org/wiki/Protocol_Documentation
-	XnUChar cameraAccelBuf[10];
-	XnUInt32 nRead;
-	nRetVal = xnUSBReceiveControl(pThis->m_DevicePrivateData.MotorHandle.USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x32, 0x0000, 0x0000, cameraAccelBuf, sizeof(cameraAccelBuf), &nRead, 5000 /* timeout */);
+	if (pThis->m_DevicePrivateData.MotorHandle.USBDevice != NULL) {
+		// Obtain Kinect accelerometer reading
+		// ref: http://openkinect.org/wiki/Protocol_Documentation
+		XnUChar cameraAccelBuf[10];
+		XnUInt32 nRead;
+		nRetVal = xnUSBReceiveControl(pThis->m_DevicePrivateData.MotorHandle.USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x32, 0x0000, 0x0000, cameraAccelBuf, sizeof(cameraAccelBuf), &nRead, 5000 /* timeout */);
 
-	if (nRetVal == XN_STATUS_OK && nRead == 10)
-	{
-		angle = (char)cameraAccelBuf[8]/2;
+		if (nRetVal == XN_STATUS_OK && nRead == 10)
+		{
+			angle = (char)cameraAccelBuf[8]/2;
+		}
+
+		*pnValue = angle;
 	}
 
-	*pnValue = angle;
 	return nRetVal;
 }
 

@@ -140,42 +140,37 @@ XnStatus XnSensorIO::OpenDevice(const XnChar* strPath)
 
 		// search for a Kinect device
 		nRetVal = Enumerate(XN_SENSOR_PRODUCT_ID_KINECT_MOTOR, devicesSet);
-		XN_IS_STATUS_OK(nRetVal);	
+		if (nRetVal == XN_STATUS_OK) {
+			//XN_IS_STATUS_OK(nRetVal);	
 
-		// now copy back
-		XnStringsHash::ConstIterator it = devicesSet.begin();
-		if (it != devicesSet.end())
-		{
-			strcpy(strMotorPath, it.Key());
+			// now copy back
+			XnStringsHash::ConstIterator it = devicesSet.begin();
+			if (it != devicesSet.end())
+			{
+				strcpy(strMotorPath, it.Key());
+			}
+			
+			xnLogVerbose(XN_MASK_DEVICE_IO, "USB motor sensor found at '%s'...", strMotorPath);
+
+			nRetVal = xnUSBOpenDeviceByPath(strMotorPath, &m_pMotorHandle->USBDevice);
+
+			if (nRetVal == XN_STATUS_OK) {
+				m_pMotorHandle->ControlConnection.bIsBulk = FALSE;
+				xnLogInfo(XN_MASK_DEVICE_IO, "Connected to USB motor device");
+				
+				// Attempt to init motor sensor
+				// ref: http://openkinect.org/wiki/Protocol_Documentation
+				XnUChar initMotorRsp[1];
+				XnUInt32 nRead;
+				nRetVal = xnUSBReceiveControl(m_pMotorHandle->USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x10, 0x0000, 0x0000, initMotorRsp, sizeof(initMotorRsp), &nRead, 5000 /* timeout */);
+				if (nRetVal == XN_STATUS_OK && nRead > 0)
+				{
+					xnLogVerbose(XN_MASK_DEVICE_IO, "USB motor init return %d bytes: %X", nRead, initMotorRsp[0]);
+				} else {
+					xnLogVerbose(XN_MASK_DEVICE_IO, "USB motor init return failure %s!", xnGetStatusString(nRetVal));
+				}
+			}
 		}
-	}
-
-	xnLogVerbose(XN_MASK_DEVICE_IO, "USB motor sensor found at '%s'...", strMotorPath);
-
-	nRetVal = xnUSBOpenDeviceByPath(strMotorPath, &m_pMotorHandle->USBDevice);
-	XN_IS_STATUS_OK(nRetVal);
-
-	m_pMotorHandle->ControlConnection.bIsBulk = FALSE;
-	xnLogInfo(XN_MASK_DEVICE_IO, "Connected to USB motor device");
-
-	// Attempt to init motor sensor
-	// ref: http://openkinect.org/wiki/Protocol_Documentation
-	XnUChar initMotorRsp[1];
-	XnUInt32 nRead;
-	nRetVal = xnUSBReceiveControl(m_pMotorHandle->USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x10, 0x0000, 0x0000, initMotorRsp, sizeof(initMotorRsp), &nRead, 5000 /* timeout */);
-	if (nRetVal == XN_STATUS_OK && nRead > 0)
-	{
-		xnLogVerbose(XN_MASK_DEVICE_IO, "USB motor init return %d bytes: %X", nRead, initMotorRsp[0]);
-
-		// Try to set the LED
-		//::Sleep(1000);
-		//nRetVal = xnUSBSendControl(m_pMotorHandle->USBDevice, XN_USB_CONTROL_TYPE_VENDOR, 0x06, 0x0002, 0x0000, NULL, 0, 5000 /* timeout*/);
-		//if (nRetVal == XN_STATUS_OK)
-		//{
-		//	xnLogVerbose(XN_MASK_DEVICE_IO, "USB LED red sent!");
-		//}
-	} else {
-		xnLogVerbose(XN_MASK_DEVICE_IO, "USB motor init return failure %s!", xnGetStatusString(nRetVal));
 	}
 
 	return XN_STATUS_OK;
