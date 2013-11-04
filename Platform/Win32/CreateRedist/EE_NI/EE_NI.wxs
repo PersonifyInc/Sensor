@@ -353,10 +353,10 @@
       <Custom Action='UnRegXnDeviceSensorV2' Before="RemoveFiles"> REMOVE ~= "ALL" </Custom>
 
 <!-- avin mod -->
-      <Custom Action='driveamd64Install' After='PublishProduct'><![CDATA[NOT Installed AND VersionNT64]]></Custom>
+      <Custom Action='driveamd64Install' After='PublishProduct'><![CDATA[VersionNT64]]></Custom>
       <Custom Action='driveamd64Uninstall' Before='RemoveFiles'><![CDATA[Installed AND VersionNT64]]></Custom>
       
-      <Custom Action='drivex86Install' After='PublishProduct'><![CDATA[NOT Installed AND NOT VersionNT64]]></Custom>
+      <Custom Action='drivex86Install' After='PublishProduct'><![CDATA[NOT VersionNT64]]></Custom>
       <Custom Action='drivex86Uninstall' Before='RemoveFiles'><![CDATA[Installed AND NOT VersionNT64]]></Custom>
 
 	  
