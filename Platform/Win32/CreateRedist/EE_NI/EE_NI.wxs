@@ -212,7 +212,11 @@
                   ExeCommand="&quot;[INSTALLLOCATIONDriver]dpinst-x86.exe&quot; /sw /el" />    
     <CustomAction Id='driveamd64Install' Directory="INSTALLLOCATIONDriver" Return="ignore" Impersonate="no" Execute="deferred"
                   ExeCommand="&quot;[INSTALLLOCATIONDriver]dpinst-amd64.exe&quot; /sw /el"/>
-	
+    <CustomAction Id='drivex86Uninstall' Directory="INSTALLLOCATIONDriver" Return="ignore" Impersonate="no" Execute="deferred"
+                  ExeCommand="&quot;[INSTALLLOCATIONDriver]dpinst-x86.exe&quot; /sw /el /u &quot;[INSTALLLOCATIONDriver]psdrv3.inf&quot;" />    
+    <CustomAction Id='driveamd64Uninstall' Directory="INSTALLLOCATIONDriver" Return="ignore" Impersonate="no" Execute="deferred"
+                  ExeCommand="&quot;[INSTALLLOCATIONDriver]dpinst-amd64.exe&quot; /sw /el /u &quot;[INSTALLLOCATIONDriver]psdrv3.inf&quot;"/>
+                  
     <!-- Register XnDeviceFile-->
     <CustomAction Id="QtExecRegXnDeviceFile" Property="SetRegXnDeviceFileProperty" Execute="immediate"
               Value="&quot;[OPENNIINSTALLDIR]bin$(var.PlatformSuffix)\niReg$(var.PlatformSuffix).exe&quot; &quot;[INSTALLLOCATIONBin]XnDeviceFile$(var.PlatformSuffix).dll&quot;"/>
@@ -349,9 +353,11 @@
       <Custom Action='UnRegXnDeviceSensorV2' Before="RemoveFiles"> REMOVE ~= "ALL" </Custom>
 
 <!-- avin mod -->
-      <Custom Action='driveamd64Install' After='PublishProduct'><![CDATA[NOT Installed AND VersionNT64]]></Custom>
+      <Custom Action='driveamd64Install' After='PublishProduct'><![CDATA[VersionNT64]]></Custom>
+      <Custom Action='driveamd64Uninstall' Before='RemoveFiles'><![CDATA[Installed AND VersionNT64]]></Custom>
       
-      <Custom Action='drivex86Install' After='PublishProduct'><![CDATA[NOT Installed AND NOT VersionNT64]]></Custom>
+      <Custom Action='drivex86Install' After='PublishProduct'><![CDATA[NOT VersionNT64]]></Custom>
+      <Custom Action='drivex86Uninstall' Before='RemoveFiles'><![CDATA[Installed AND NOT VersionNT64]]></Custom>
 
 	  
     </InstallExecuteSequence>

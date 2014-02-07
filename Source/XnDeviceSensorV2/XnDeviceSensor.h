@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -28,7 +29,7 @@
 #include <XnPlatform.h>
 #ifndef XN_PLATFORM_SUPPORTS_DYNAMIC_LIBS
 	#undef XN_DEVICE_EXPORT_PREFIX
-	#define XN_DEVICE_EXPORT_PREFIX SensorV2_
+	#define XN_DEVICE_EXPORT_PREFIX Kinect_
 #endif
 
 #include <XnDevice.h>
@@ -48,9 +49,8 @@
 //---------------------------------------------------------------------------
 #define XN_DEVICE_MAJORVERSION 1
 #define XN_DEVICE_MINORVERSION 0
-// --avin mod--
-#define XN_DEVICE_NAME "SensorKinect"
-#define XN_DEVICE_DESCRIPTION "Xiron I/O Kinect Device"
+#define XN_DEVICE_NAME "Kinect"
+#define XN_DEVICE_DESCRIPTION "Microsoft XBox 360 Kinect Device"
 
 #define XN_DEVICE_SENSOR_THREAD_KILL_TIMEOUT 5000
 
@@ -264,6 +264,7 @@ typedef struct XnDevicePrivateData
 	XnChar				cpSensorID[XN_SENSOR_PROTOCOL_SENSOR_ID_LENGTH+1];
 	XnUInt8				nBoardID;
 	XN_SENSOR_HANDLE	SensorHandle;
+	XN_SENSOR_HANDLE	MotorHandle;
 	XnSensorInfo		SensorInfo;
 	XnFirmwareInfo		FWInfo;
 	XnHWInfo			HWInfo;

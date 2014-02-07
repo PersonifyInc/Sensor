@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -350,6 +351,8 @@
 #define XN_MODULE_PROPERTY_VENDOR_SPECIFIC_DATA		"VendorSpecificData"
 /** Boolean */
 #define XN_MODULE_PROPERTY_AUDIO_SUPPORTED			"AudioSupported"
+/** Integer (-128,128) = ~camera angle in deg */
+#define XN_MODULE_PROPERTY_CAMERA_ANGLE_VERTICAL	"CameraAngleVertical"
 
 
 //---------------------------------------------------------------------------

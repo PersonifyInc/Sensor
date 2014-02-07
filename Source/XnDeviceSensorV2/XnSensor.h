@@ -2,6 +2,7 @@
 *                                                                           *
 *  PrimeSense Sensor 5.x Alpha                                              *
 *  Copyright (C) 2011 PrimeSense Ltd.                                       *
+*  Copyright (C) 2011-2012 Nuvixa, Inc.  All Rights Reserved.               *
 *                                                                           *
 *  This file is part of PrimeSense Sensor.                                  *
 *                                                                           *
@@ -158,6 +159,8 @@ private:
 	static XnStatus XN_CALLBACK_TYPE SetFirmwareParamCallback(XnGeneralProperty* pSender, const XnGeneralBuffer& gbValue, void* pCookie);
 	static XnStatus XN_CALLBACK_TYPE SetCmosBlankingUnitsCallback(XnGeneralProperty* pSender, const XnGeneralBuffer& gbValue, void* pCookie);
 	static XnStatus XN_CALLBACK_TYPE SetCmosBlankingTimeCallback(XnGeneralProperty* pSender, const XnGeneralBuffer& gbValue, void* pCookie);
+	static XnStatus XN_CALLBACK_TYPE GetCameraAngleVerticalCallback(const XnIntProperty* pSender, XnUInt64* pnValue, void* pCookie);
+	static XnStatus XN_CALLBACK_TYPE SetCameraAngleVerticalCallback(XnIntProperty* pSender, XnUInt64 nValue, void* pCookie);
 	static XnStatus XN_CALLBACK_TYPE ResetCallback(XnIntProperty* pSender, XnUInt64 nValue, void* pCookie);
 	static XnStatus XN_CALLBACK_TYPE SetFirmwareModeCallback(XnIntProperty* pSender, XnUInt64 nValue, void* pCookie);
 	static XnStatus XN_CALLBACK_TYPE GetFixedParamsCallback(const XnGeneralProperty* pSender, const XnGeneralBuffer& gbValue, void* pCookie);
@@ -187,6 +190,7 @@ private:
 	XnGeneralProperty m_FirmwareParam;
 	XnGeneralProperty m_CmosBlankingUnits;
 	XnGeneralProperty m_CmosBlankingTime;
+	XnIntProperty m_CameraAngleVertical;
 	XnIntProperty m_Reset;
 	XnIntProperty m_FirmwareMode;
 	XnVersions m_VersionData;
